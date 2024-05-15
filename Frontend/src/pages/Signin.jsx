@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../app/user/userSlice";
 
 const Signin = () => {
+  const { loading } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -11,6 +20,7 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(signInStart());
       const res = await fetch("/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "Application/json" },
@@ -23,16 +33,20 @@ const Signin = () => {
           duration: 3000,
           style: { borderRadius: "10px", color: "#333", background: "#fff" },
         });
+        dispatch(signInFailure());
         return;
       }
 
       if (data) {
+        dispatch(signInSuccess(data));
+        navigate("/");
         toast.success(`Welcome ,${data.name}`, {
           duration: 3000,
           style: { borderRadius: "10px", color: "#333", background: "#fff" },
         });
       }
     } catch (error) {
+      dispatch(signInFailure());
       toast.error(error.message, {
         duration: 3000,
         style: { borderRadius: "10px", color: "#333", background: "#fff" },
@@ -88,10 +102,11 @@ const Signin = () => {
 
             <div>
               <button
+                disabled={loading}
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-400 disabled:cursor-not-allowed"
               >
-                SIGN IN
+                {loading ? `LOADING...` : `SIGN IN`}
               </button>
             </div>
           </form>

@@ -4,8 +4,8 @@ import { databaseConnection } from "./data/data.js";
 import routes from "./router/user.routes.js";
 import { errorMiddleware } from "./middleware/errorMiddleware.js";
 import cookieParser from "cookie-parser";
-config({ path: "./config/.env" });
-databaseConnection()
+config({ path: ".env" });
+databaseConnection();
 
 const server = express();
 server.use(cookieParser());

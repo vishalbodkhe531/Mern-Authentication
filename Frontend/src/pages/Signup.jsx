@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import OAuth from "../components/OAuth";
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
@@ -114,6 +115,10 @@ const Signup = () => {
               >
                 {loading ? `LOADING...` : `SIGN UP`}
               </button>
+            </div>
+            <hr />
+            <div>
+              <OAuth />
             </div>
           </form>
 
