@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  googleAuth,
   userCreate,
   userDelete,
   userLogin,
@@ -17,7 +18,7 @@ routes.post("/login", userLogin);
 routes.get("/profile", authentication, userProfile);
 routes.get("/logout", userLogout);
 
-routes.get("/googleAuth");
+routes.post("/googleAuth", googleAuth);
 routes
   .route("/:id")
   .put(authentication, userUpdate)

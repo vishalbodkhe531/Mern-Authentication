@@ -7,6 +7,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../app/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const Signin = () => {
   const { loading } = useSelector((state) => state.user);
@@ -108,6 +109,10 @@ const Signin = () => {
               >
                 {loading ? `LOADING...` : `SIGN IN`}
               </button>
+            </div>
+            <hr />
+            <div>
+              <OAuth />
             </div>
           </form>
 

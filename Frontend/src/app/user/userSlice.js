@@ -23,6 +23,7 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       localStorage.setItem("currentUser", JSON.stringify(action.payload));
     },
+    
   },
 });
 export const { signInStart, signInFailure, signInSuccess } = userSlice.actions;

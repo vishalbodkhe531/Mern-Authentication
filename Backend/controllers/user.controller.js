@@ -48,7 +48,7 @@ export const userLogin = async (req, res, next) => {
     res
       .cookie("cookie", token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 12 * 24 * 60 * 60 * 1000,
       })
       .status(200)
       .json(rest);
@@ -120,6 +120,52 @@ export const userDelete = async (req, res, next) => {
       .status(200)
       .json({ message: "User deleted successfully" });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const googleAuth = async (req, res, next) => {
+  try {
+    const { name, email, profilePic } = req.body;
+
+    const isUserExist = await User.findOne({ email });
+
+    if (isUserExist) {
+      const { password, ...rest } = isUserExist._doc;
+      const token = jwt.sign(
+        { _id: isUserExist._id },
+        process.env.SRECTRET_KEY
+      );
+      return res
+        .cookie("cookie", token, {
+          httpOnly: true,
+          maxAge: 12 * 24 * 60 * 60 * 1000,
+        })
+        .status(202)
+        .json(rest);
+    }
+    const password = Math.floor(Math.random() * 10000000 + 10000000).toString();
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const newUser = new User({
+      name,
+      email,
+      profilePic,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    const { password: hashPass, ...rest } = newUser._doc;
+    const token = jwt.sign({ _id: newUser._id }, process.env.SRECTRET_KEY);
+    return res
+      .cookie("cookie", token, {
+        httpOnly: true,
+        maxAge: 12 * 24 * 60 * 60 * 1000,
+      })
+      .status(201)
+      .json(rest);
+  } catch (error) {
+    console.log(`Error while google Auth`);
     next(error);
   }
 };
