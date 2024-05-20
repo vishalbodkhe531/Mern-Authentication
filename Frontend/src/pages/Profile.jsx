@@ -1,13 +1,66 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { deleteUser, logoutUser } from "../app/user/userSlice";
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+  const deleteHandler = async () => {
+    const result = confirm("Are You sure want to delete your account?");
+    if (!result) {
+      return;
+    }
+    const res = await fetch(`/api/user/${currentUser._id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    console.log(data);
+    if (data.success === false) {
+      toast.error(`Error while Delete your account try again later`, {
+        duration: 3000,
+        style: { borderRadius: "10px", background: "#fff", color: "#333" },
+      });
+      return;
+    }
+    if (data) {
+      dispatch(deleteUser());
+      toast.success(data.message, {
+        duration: 3000,
+        style: { borderRadius: "10px", background: "#fff", color: "#333" },
+      });
+    }
+  };
+
+  const logoutHandler = async () => {
+    const result = confirm("Do you want to logout?");
+    if (!result) {
+      return;
+    }
+    const res = await fetch(`/api/user/logout`);
+    const data = await res.json();
+    console.log(data);
+    if (data.success === false) {
+      toast.error(`Error while logout your account try again later`, {
+        duration: 3000,
+        style: { borderRadius: "10px", background: "#fff", color: "#333" },
+      });
+      return;
+    }
+    if (data) {
+      dispatch(logoutUser());
+      toast.success(data.message, {
+        duration: 3000,
+        style: { borderRadius: "10px", background: "#fff", color: "#333" },
+      });
+    }
+  };
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
-          className="mx-auto h-24 w-auto"
+          className="mx-auto h-28 w-auto rounded-full"
           src={currentUser.profilePic}
           alt="Profile Image"
           title="Profile Image"
@@ -52,8 +105,12 @@ const Profile = () => {
         </form>
 
         <p className="mt-10 flex justify-between items-center">
-          <button className="cursor-pointer">Delete Account</button>
-          <button className="cursor-pointer">Logout</button>
+          <button className="cursor-pointer" onClick={deleteHandler}>
+            Delete Account
+          </button>
+          <button className="cursor-pointer" onClick={logoutHandler}>
+            Logout
+          </button>
         </p>
       </div>
     </div>

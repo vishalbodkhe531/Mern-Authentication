@@ -8,9 +8,11 @@ import {
 } from "../app/user/userSlice";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const OAuth = () => {
   const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleClick = async () => {
     try {
       dispatch(signInStart());
@@ -42,6 +44,7 @@ const OAuth = () => {
           duration: 3000,
           style: { borderRadius: "10px", color: "#333", background: "#fff" },
         });
+        navigate("/");
         dispatch(signInSuccess(data));
       }
     } catch (error) {
