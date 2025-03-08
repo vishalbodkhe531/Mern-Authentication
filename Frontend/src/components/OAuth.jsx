@@ -9,6 +9,7 @@ import {
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const OAuth = () => {
   const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const OAuth = () => {
         dispatch(signInSuccess(data));
       }
     } catch (error) {
-      dispatch(signInFailure());
+      dispatch(signInFailure(false));
       console.log(error);
     }
   };

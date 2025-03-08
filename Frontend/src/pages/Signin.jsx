@@ -33,7 +33,7 @@ const Signin = () => {
         toast.error(data.message, {
           duration: 3000,
           style: { borderRadius: "10px", color: "#333", background: "#fff" },
-        });
+        });``
         dispatch(signInFailure());
         return;
       }
